@@ -1,41 +1,26 @@
-import type { V2_MetaFunction } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
+import { eq } from "drizzle-orm";
+import { db } from "~/db/db.server";
+import { skinlevels, skins } from "~/db/schema.server";
 
-export const meta: V2_MetaFunction = () => {
-  return [
-    { title: "New Remix App" },
-    { name: "description", content: "Welcome to Remix!" },
-  ];
+export const loader = async () => {
+  const skinLevels = db
+    .select()
+    .from(skins)
+    .innerJoin(skinlevels, eq(skins.id, skinlevels.skin));
+
+  return skinLevels.all();
 };
 
 export default function Index() {
+  const skins = useLoaderData<typeof loader>();
+
   return (
-    <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
-      <h1>Welcome to Remix</h1>
-      <ul>
-        <li>
-          <a
-            target="_blank"
-            href="https://remix.run/tutorials/blog"
-            rel="noreferrer"
-          >
-            15m Quickstart Blog Tutorial
-          </a>
-        </li>
-        <li>
-          <a
-            target="_blank"
-            href="https://remix.run/tutorials/jokes"
-            rel="noreferrer"
-          >
-            Deep Dive Jokes App Tutorial
-          </a>
-        </li>
-        <li>
-          <a target="_blank" href="https://remix.run/docs" rel="noreferrer">
-            Remix Docs
-          </a>
-        </li>
-      </ul>
+    <div>
+      {skins.map((skin) => (
+        <p key={skin.skins.id}>{skin.skins.name}</p>
+      ))}
+      hey <p>yo</p>
     </div>
   );
 }
