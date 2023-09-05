@@ -1,1 +1,1 @@
-export { loader } from "../features/search/loader";
+export { loader } from "~/features/skin/Search";

@@ -1,51 +1,43 @@
 import { OrbitControls, useTexture } from "@react-three/drei";
 import { Canvas, useLoader } from "@react-three/fiber";
-import type { LoaderArgs } from "@remix-run/node";
+import { redirect, type LoaderArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { eq, sql } from "drizzle-orm";
 import { Suspense } from "react";
 import { Color, RepeatWrapping } from "three";
 import { db } from "~/db/db.server";
 import { skinlevels, skins } from "~/db/schema.server";
-import { Search } from "~/features/search/Input";
+import { Random } from "~/features/skin/Random";
+import { Search } from "~/features/skin/Search";
+import { TopBar } from "~/features/topbar/TopBar";
 import { PSKLoader } from "~/pskLoader";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
   const q = url.searchParams.get("q");
 
-  const specific = (text: string) => {
-    const [skin] = db
-      .select()
-      .from(skins)
-      .where(eq(skins.name, text))
-      .innerJoin(skinlevels, eq(skins.id, skinlevels.skin))
-      .limit(1)
-      .all();
-
-    return skin;
-  };
-
-  const random = () => {
-    const [skin] = db
-      .select()
-      .from(skins)
-      .innerJoin(skinlevels, eq(skins.id, skinlevels.skin))
-      .limit(1)
-      .orderBy(sql`random()`)
-      .all();
-
-    return skin;
-  };
-
   if (!q) {
-    return random();
+    url.pathname = "/random";
+    return redirect(url.toString());
   }
 
-  const skin = specific(q);
-  if (!skin) {
-    return random();
+  const valid = db
+    .select({ count: sql<number>`count(1)` })
+    .from(skins)
+    .where(eq(skins.id, q));
+
+  if (!valid) {
+    return new Response("Not Found", { status: 404 });
   }
+
+  const [skin] = db
+    .select()
+    .from(skins)
+    .where(eq(skins.name, q))
+    .innerJoin(skinlevels, eq(skins.id, skinlevels.skin))
+    .limit(1)
+    .all();
+
   return skin;
 };
 
@@ -53,17 +45,29 @@ export default function Index() {
   const skin = useLoaderData<typeof loader>();
 
   return (
-    <div>
-      <Search />
-      <p key={skin.skins.id}>{skin.skins.name}</p>
-      <Canvas style={{ height: "100vh", width: "100vw" }}>
-        <Suspense fallback={null}>
-          <Gun model={skin.skinlevels.attachment + "_LOD0.psk"} />
-          <ambientLight intensity={2} />
-          <OrbitControls />
-        </Suspense>
-      </Canvas>
-    </div>
+    <>
+      <header>
+        <TopBar>
+          <Search />
+          <Random />
+        </TopBar>
+      </header>
+      <div>
+        <p
+          key={skin.skins.id}
+          className="absolute left-5 bottom-5 text-xl text-white"
+        >
+          {skin.skins.name}
+        </p>
+        <Canvas className="w-full aspect-[16/7]">
+          <Suspense fallback={null}>
+            <Gun model={skin.skinlevels.attachment + "_LOD0.psk"} />
+            <ambientLight intensity={2} />
+            <OrbitControls />
+          </Suspense>
+        </Canvas>
+      </div>
+    </>
   );
 }
 
@@ -113,13 +117,17 @@ function GunTexture({ attach, material }: any) {
     }, {})
   );
 
+  const mapProps = {
+    map: textures.Albedo,
+    "map-wrapT": textures.Albedo ? RepeatWrapping : undefined,
+    "map-wrapS": textures.Albedo ? RepeatWrapping : undefined,
+  };
+
   return (
     <>
       <meshStandardMaterial
         attach={attach}
-        map={textures.Albedo}
-        map-wrapT={textures.Albedo ? RepeatWrapping : undefined}
-        map-wrapS={textures.Albedo ? RepeatWrapping : undefined}
+        {...mapProps}
         normalMap={textures.Normal}
         emissiveMap={textures.AEM}
         emissive={
