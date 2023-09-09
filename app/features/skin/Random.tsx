@@ -5,8 +5,8 @@ import { eq, sql } from "drizzle-orm";
 import { db } from "~/db/db.server";
 import { skinlevels, skins } from "~/db/schema.server";
 
-export const loader = ({ request }: LoaderArgs) => {
-  const [skin] = db
+export const loader = async ({ request }: LoaderArgs) => {
+  const [skin] = await db
     .select({ name: skins.name })
     .from(skins)
     .innerJoin(skinlevels, eq(skins.id, skinlevels.skin))

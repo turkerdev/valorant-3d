@@ -30,7 +30,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     return new Response("Not Found", { status: 404 });
   }
 
-  const [skin] = db
+  const [skin] = await db
     .select()
     .from(skins)
     .where(eq(skins.name, q))

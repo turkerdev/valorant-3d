@@ -13,7 +13,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     return null;
   }
 
-  const found = db
+  const found = await db
     .select()
     .from(skins)
     .where(like(skins.name, `%${q}%`))

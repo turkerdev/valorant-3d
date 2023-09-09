@@ -7,6 +7,7 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@libsql/client": "^0.3.3-pre.2",
     "@react-three/drei": "^9.80.4",
     "@react-three/fiber": "^8.13.7",
     "@remix-run/css-bundle": "^1.19.3",
@@ -15,7 +16,6 @@
     "@remix-run/vercel": "^1.19.3",
     "@types/three": "^0.155.0",
     "@vercel/node": "^2.10.3",
-    "better-sqlite3": "^8.5.1",
     "clsx": "^2.0.0",
     "drizzle-orm": "^0.28.2",
     "isbot": "^3.6.8",
