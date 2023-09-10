@@ -18,7 +18,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     throw new Response("No skin found", { status: 404 });
   }
 
-  return redirect(`/view/${skin.name}`);
+  return redirect(`/view/${encodeURIComponent(skin.name)}`);
 };
 
 export const Random = () => {

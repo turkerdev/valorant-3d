@@ -62,7 +62,7 @@ type SearchResultProps = {
 
 const SearchResult = ({ name }: SearchResultProps) => {
   return (
-    <Link className="hover:text-white" to={`/view/${name}`}>
+    <Link className="hover:text-white" to={`/view/${encodeURIComponent(name)}`}>
       {name}
     </Link>
   );
