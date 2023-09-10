@@ -23,6 +23,9 @@ export default function App() {
         <Links />
       </head>
       <body className="bg-neutral-800 text-neutral-200">
+        <p className="bg-yellow-400 text-black text-center text-sm">
+          You will encounter lots of bugs.
+        </p>
         <Outlet />
         <ScrollRestoration />
         <Scripts />
