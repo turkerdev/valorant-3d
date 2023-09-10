@@ -80,7 +80,7 @@ const RawBoneBytes = {
 };
 
 export class PSKLoader extends THREE.Loader {
-  constructor(manager) {
+  constructor(manager?: THREE.LoadingManager) {
     super(manager);
 
     // this.AnimLoader = new PSALoader();

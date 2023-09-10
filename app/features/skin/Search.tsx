@@ -24,21 +24,14 @@ export const loader = async ({ request }: LoaderArgs) => {
   return found;
 };
 
-type Props = {
-  className?: string;
-};
-
-export const Search = ({ className }: Props) => {
+export const Search = () => {
   const fetcher = useFetcher<typeof loader>();
   const fetch = useMemo(() => throttle(fetcher.submit, 400), [fetcher.submit]);
+  const busy = fetcher.state === "submitting";
 
   return (
     <div>
-      <fetcher.Form
-        method="get"
-        action="/search"
-        onChange={(e) => fetch(e.currentTarget)}
-      >
+      <fetcher.Form action="/search" onChange={(e) => fetch(e.currentTarget)}>
         <input
           className="p-1 rounded text-black"
           type="text"
@@ -46,21 +39,19 @@ export const Search = ({ className }: Props) => {
           placeholder="Search"
         />
       </fetcher.Form>
-      {fetcher.data && (
+      {fetcher.data || busy ? (
         <div className="z-10 flex flex-col absolute bg-neutral-700">
-          {fetcher.data?.map((s, i) => (
-            <SearchResult key={i} name={s.skins.name} />
-          ))}
-        </div>
-      )}
-
-      {/* {fetcher.data ? (
-        <div style={{ display: "flex", gap: "6px" }}>
-         
+          {busy ? (
+            <div>Searching...</div>
+          ) : (
+            fetcher.data?.map((s, i) => (
+              <SearchResult key={i} name={s.skins.name} />
+            ))
+          )}
         </div>
       ) : (
         <></>
-      )} */}
+      )}
     </div>
   );
 };
@@ -71,10 +62,8 @@ type SearchResultProps = {
 
 const SearchResult = ({ name }: SearchResultProps) => {
   return (
-    <>
-      <Link className="hover:text-white" to={`/?q=${name}`}>
-        {name}
-      </Link>
-    </>
+    <Link className="hover:text-white" to={`/view/${name}`}>
+      {name}
+    </Link>
   );
 };

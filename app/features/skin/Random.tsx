@@ -18,15 +18,12 @@ export const loader = async ({ request }: LoaderArgs) => {
     throw new Response("No skin found", { status: 404 });
   }
 
-  const url = new URL(request.url);
-  url.pathname = "/";
-  url.searchParams.set("q", skin.name);
-  return redirect(url.toString());
+  return redirect(`/view/${skin.name}`);
 };
 
 export const Random = () => {
   return (
-    <Form method="get" action="/random">
+    <Form action="/random">
       <button className="text-black rounded px-2 bg-white">Random</button>
     </Form>
   );
