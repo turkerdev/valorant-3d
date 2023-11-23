@@ -37,9 +37,7 @@ function Gun(props: GunProps) {
     PSKLoader,
     props.model,
     (loader) => {
-      loader.setResourcePath(
-        "https://pub-ee66ec58f4e14d87aaaba2b80a82c852.r2.dev"
-      );
+      loader.setResourcePath("https://valorantskins.turker.dev");
     }
   );
 
@@ -65,9 +63,7 @@ function GunTexture({ attach, material }: any) {
         return acc;
       }
 
-      acc[key] =
-        "https://pub-ee66ec58f4e14d87aaaba2b80a82c852.r2.dev/" +
-        material.Textures[key];
+      acc[key] = "https://valorantskins.turker.dev/" + material.Textures[key];
       return acc;
     }, {})
   );
