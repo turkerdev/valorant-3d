@@ -1,21 +1,23 @@
 {
   "private": true,
   "sideEffects": false,
+  "type": "module",
   "scripts": {
     "build": "remix build",
-    "dev": "remix dev",
+    "dev": "remix dev --manual -c \"npm run start\"",
+    "start": "wrangler pages dev --compatibility-date=2023-06-21 ./public",
     "typecheck": "tsc"
   },
   "dependencies": {
     "@libsql/client": "^0.3.2",
     "@react-three/drei": "^9.80.4",
     "@react-three/fiber": "^8.13.7",
-    "@remix-run/css-bundle": "^1.19.3",
-    "@remix-run/node": "^1.19.3",
-    "@remix-run/react": "^1.19.3",
-    "@remix-run/vercel": "^1.19.3",
+    "@remix-run/cloudflare": "^2.3.1",
+    "@remix-run/cloudflare-pages": "^2.3.1",
+    "@remix-run/css-bundle": "^2.3.1",
+    "@remix-run/node": "^2.3.1",
+    "@remix-run/react": "^2.3.1",
     "@types/three": "^0.155.0",
-    "@vercel/node": "^2.10.3",
     "clsx": "^2.0.0",
     "drizzle-orm": "^0.28.2",
     "isbot": "^3.6.8",
@@ -26,9 +28,10 @@
     "three": "^0.155.0"
   },
   "devDependencies": {
-    "@remix-run/dev": "^1.19.3",
-    "@remix-run/eslint-config": "^1.19.3",
-    "@remix-run/serve": "^1.19.3",
+    "@cloudflare/workers-types": "^4.20231121.0",
+    "@remix-run/dev": "^2.3.1",
+    "@remix-run/eslint-config": "^2.3.1",
+    "@remix-run/serve": "^2.3.1",
     "@types/better-sqlite3": "^7.6.4",
     "@types/lodash.throttle": "^4.1.7",
     "@types/react": "^18.0.35",
@@ -36,9 +39,10 @@
     "@types/source-map-support": "^0.5.6",
     "eslint": "^8.38.0",
     "tailwindcss": "^3.3.3",
-    "typescript": "^5.0.4"
+    "typescript": "^5.0.4",
+    "wrangler": "^3.17.1"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=18.0.0"
   }
 }

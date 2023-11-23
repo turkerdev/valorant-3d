@@ -1,12 +1,11 @@
-import type { LoaderArgs } from "@remix-run/node";
-import { redirect } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/cloudflare";
+import { redirect } from "@remix-run/cloudflare";
 import { Form } from "@remix-run/react";
 import { eq, sql } from "drizzle-orm";
-import { db } from "~/db/db.server";
 import { skinlevels, skins } from "~/db/schema.server";
 
-export const loader = async ({ request }: LoaderArgs) => {
-  const [skin] = await db
+export const loader = async ({ context }: LoaderFunctionArgs) => {
+  const [skin] = await context.db
     .select({ name: skins.name })
     .from(skins)
     .innerJoin(skinlevels, eq(skins.id, skinlevels.skin))

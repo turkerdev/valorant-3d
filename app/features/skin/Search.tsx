@@ -1,19 +1,18 @@
-import type { LoaderArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/cloudflare";
 import { Link, useFetcher } from "@remix-run/react";
 import { eq, like } from "drizzle-orm";
 import throttle from "lodash.throttle";
 import { useMemo } from "react";
-import { db } from "~/db/db.server";
 import { skinlevels, skins } from "~/db/schema.server";
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request, context }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
   const q = url.searchParams.get("q");
   if (!q) {
     return null;
   }
 
-  const found = await db
+  const found = await context.db
     .select()
     .from(skins)
     .where(like(skins.name, `%${q}%`))

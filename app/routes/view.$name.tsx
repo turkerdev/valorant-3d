@@ -1,19 +1,19 @@
-import { type LoaderArgs } from "@remix-run/node";
+import { type LoaderFunctionArgs } from "@remix-run/cloudflare";
 import { Outlet, isRouteErrorResponse, useRouteError } from "@remix-run/react";
 import { eq } from "drizzle-orm";
-import { db } from "~/db/db.server";
+
 import { skinlevels, skins } from "~/db/schema.server";
 import { Random } from "~/features/skin/Random";
 import { Search } from "~/features/skin/Search";
 
-export const loader = async ({ request, params }: LoaderArgs) => {
+export const loader = async ({ params, context }: LoaderFunctionArgs) => {
   const name = params.name;
 
   if (!name) {
     throw new Response("Not Found", { status: 404 });
   }
 
-  const [skin] = await db
+  const [skin] = await context.db
     .select()
     .from(skins)
     .where(eq(skins.name, name))

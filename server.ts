@@ -1,9 +1,17 @@
+import { logDevReady } from "@remix-run/cloudflare";
+import { createPagesFunctionHandler } from "@remix-run/cloudflare-pages";
 import * as build from "@remix-run/dev/server-build";
-import { installGlobals } from "@remix-run/node";
-import { createRequestHandler } from "@remix-run/vercel";
-import sourceMapSupport from "source-map-support";
+import { createDb } from "~/db/db.server";
 
-sourceMapSupport.install();
-installGlobals();
+if (process.env.NODE_ENV === "development") {
+  logDevReady(build);
+}
 
-export default createRequestHandler({ build, mode: process.env.NODE_ENV });
+export const onRequest = createPagesFunctionHandler({
+  build,
+  getLoadContext: (context) => ({
+    env: context.env,
+    db: createDb(context.env.SQLITE_URL, context.env.SQLITE_AUTH_TOKEN),
+  }),
+  mode: build.mode,
+});
