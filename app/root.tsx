@@ -1,4 +1,4 @@
-import { json, type LinksFunction } from "@remix-run/node";
+import { json, type LinksFunction, type MetaFunction } from "@remix-run/node";
 import {
   Links,
   LiveReload,
@@ -7,9 +7,13 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
-  useLocation,
 } from "@remix-run/react";
 import stylesheet from "./tailwind.css";
+
+export const meta: MetaFunction = () => [
+  { title: "VALORANT 3D SKIN VIEWER" },
+  { name: "description", content: "A 3D skin viewer for VALORANT" },
+];
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
@@ -20,14 +24,7 @@ export const loader = async () => {
 };
 
 export default function App() {
-  const location = useLocation();
   const { gaTrackingId } = useLoaderData<typeof loader>();
-
-  // useEffect(() => {
-  //   if (gaTrackingId?.length) {
-  //     // gtag.pageview(location.pathname, gaTrackingId);
-  //   }
-  // }, [location, gaTrackingId]);
 
   return (
     <html lang="en">
@@ -38,6 +35,13 @@ export default function App() {
         <Links />
       </head>
       <body className="bg-neutral-800 text-neutral-200">
+        <p className="bg-yellow-400 text-black text-center text-sm">
+          You will encounter lots of bugs.
+        </p>
+        <Outlet />
+        <ScrollRestoration />
+        <Scripts />
+        <LiveReload />
         {process.env.NODE_ENV === "development" || !gaTrackingId ? null : (
           <>
             <script
@@ -53,21 +57,12 @@ export default function App() {
                 function gtag(){dataLayer.push(arguments);}
                 gtag('js', new Date());
 
-                gtag('config', '${gaTrackingId}', {
-                  page_path: window.location.pathname,
-                });
+                gtag('config', '${gaTrackingId}');
               `,
               }}
             />
           </>
         )}
-        <p className="bg-yellow-400 text-black text-center text-sm">
-          You will encounter lots of bugs.
-        </p>
-        <Outlet />
-        <ScrollRestoration />
-        <Scripts />
-        <LiveReload />
       </body>
     </html>
   );

@@ -1,10 +1,25 @@
 import { OrbitControls, useTexture } from "@react-three/drei";
 import { Canvas, useLoader } from "@react-three/fiber";
+import type { MetaFunction } from "@remix-run/react";
 import { useRouteLoaderData } from "@remix-run/react";
 import { Suspense } from "react";
 import { Color, RepeatWrapping } from "three";
 import { PSKLoader } from "~/pskLoader";
 import { type loader as skinLoader } from "~/routes/view.$name";
+
+export const meta: MetaFunction<
+  unknown,
+  { "routes/view.$name": typeof skinLoader }
+> = ({ matches }) => {
+  const skinName = matches.find((match) => match.id === "routes/view.$name")
+    ?.data.skins.name;
+
+  if (!skinName) {
+    return [{ title: `Not Found | 3D SKIN VIEWER` }];
+  }
+
+  return [{ title: `${skinName} | 3D SKIN VIEWER` }];
+};
 
 export default function View3D() {
   const skin = useRouteLoaderData<typeof skinLoader>("routes/view.$name");
