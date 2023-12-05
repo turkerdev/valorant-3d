@@ -3,10 +3,8 @@ import { Outlet, isRouteErrorResponse, useRouteError } from "@remix-run/react";
 import { eq } from "drizzle-orm";
 import { db } from "~/db/db.server";
 import { skinlevels, skins } from "~/db/schema.server";
-import { Random } from "~/features/skin/Random";
-import { Search } from "~/features/skin/Search";
 
-export const loader = async ({ request, params }: LoaderArgs) => {
+export const loader = async ({ params }: LoaderArgs) => {
   const name = params.name;
 
   if (!name) {
@@ -29,15 +27,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 };
 
 export default function View() {
-  return (
-    <>
-      <header className="flex p-1 items-center gap-2">
-        <Search />
-        <Random />
-      </header>
-      <Outlet />
-    </>
-  );
+  return <Outlet />;
 }
 
 export function ErrorBoundary() {
